@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dropdown in menu</title>
+	<style type="text/css">
+		.menu ul{
+			visibility: hidden;
+		}
+
+		.menu ul li{
+			line-height: 5px;
+			transition: all 0.5s ease-in-out;
+		}
+
+		.menu a:hover+ul{
+			visibility: visible;
+		}
+
+		.menu a:hover+ul li{
+			line-height: 40px;
+		}
+	</style>
+</head>
+<body>
+	<div class="menu">
+		<a href="#">select menu</a>
+		<ul>
+			<li><a herf="">menu1</a></li>
+			<li><a herf="">menu2</a></li>
+			<li><a herf="">menu3</a></li>
+		</ul>
+	</div>
+
+	<script type="text/javascript">
+		
+	</script>
+</body>
+</html>
