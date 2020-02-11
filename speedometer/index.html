@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
+<title>speedo-meter</title>
+<script type="text/javascript" src="d3.js"></script>
+</head>
+
+<body>
+<p>Speedometer</p>
+<div style="float:right">
+<table width="200" border="1" height="300">
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Value</th>
+  </tr>
+  <tr>
+    <td>old index</td>
+    <td><p id="oldIndex"></p></td>
+  </tr>
+ <tr>
+    <td>new index</td>
+    <td><p id="newIndex"></p></td>
+  </tr>
+  <tr>
+    <td>diff. index</td>
+    <td><p id="diffIndex"></p></td>
+  </tr>
+  <!--<tr>
+    <td>currentstep</td>
+    <td><p id="cs"></p></td>
+  </tr>-->
+</table>
+</div>
+
+
+<input type="button" value="PLAY" onclick="startTransition()" />
+</body>
+<script type="text/javascript">
+//index array
+var index = [120,50,40,110,80,10,70,55,65,120];
+
+var minIndex = 0; // min value in index array(also considering intial value)
+var maxIndex = d3.max(index); // max. value in index array
+var rangeOfIndex = 2*(maxIndex-minIndex); // positive range. so multiplied by 2 to shift negative values towards positive
+
+var sliderBoxLength = 380;
+
+var currentStep = 60; // present x coordinate of slider
+var endStep = currentStep + sliderBoxLength;
+var jumpStep = sliderBoxLength/(index.length);
+
+var oldIndex = 0; // min of index array
+var currentIndex;
+
+//------------------------visualization parameter----------------//
+// speedo meter center coordinate and radius
+var speedometerCenterX = 250;
+var speedometerCenterY = 200;
+var speedometerRadius = 160;
+
+// needle coordinates, length, angle and radius
+var needleRadius = 6;
+var needleLength = 120;
+var radian;
+var lineDatanew;
+
+// svg div
+var svgdiv = d3.select("body").append("svg").attr("width",500).attr("height",500).style("border","1px solid black");
+// circle
+svgdiv.append("circle").attr("cx",speedometerCenterX).attr("cy",speedometerCenterY).attr("r",speedometerRadius).attr("id","speedometerid").style("fill","red").style("stroke", "blue").style("stroke-width","2px");;
+// inner circle
+svgdiv.append("circle").attr("cx",speedometerCenterX).attr("cy",speedometerCenterY).attr("r",speedometerRadius-30).style("fill","white").style("stroke", "blue").style("stroke-width","2px");;
+
+
+// numbers on circle
+var distanceFromCenter;
+for(i=0; i<=maxIndex; i+=10)
+{
+	distanceFromCenter = needleLength - 10;
+	angle = degreeToRadian((180/maxIndex)*i);					 
+	topX = speedometerCenterX + Math.round((-Math.cos(angle))*distanceFromCenter) - 11;// 11 to adjuct alignment of numbers
+	topY = speedometerCenterY + Math.round((-Math.sin(angle))*distanceFromCenter);
+	svgdiv.append("text").attr("x",topX).attr("y",topY).attr("font-family","sans-serif").attr("font-size","14px").attr("fill","black").text(i);
+}
+					 
+// needle
+//intial needle points
+radian = degreeToRadian(0); //alert((180/maxIndex)*currentIndex);
+var topX = speedometerCenterX + Math.round((-Math.cos(radian))*needleLength); 
+var topY = speedometerCenterY + Math.round((-Math.sin(radian))*needleLength);
+var leftX = speedometerCenterX + Math.cos(radian-Math.PI/2)*needleRadius;
+var leftY = speedometerCenterY + Math.sin(radian-Math.PI/2)*needleRadius;
+var rightX = speedometerCenterX + Math.cos(radian+Math.PI/2)*needleRadius;
+var rightY = speedometerCenterY + Math.sin(radian+Math.PI/2)*needleRadius;
+					 
+var lineData = [ { "x": topX,   "y": topY},
+                 { "x": leftX,  "y": leftY},
+                 { "x": rightX,  "y": rightY}];
+var lineFunction = d3.svg.line()
+                         .x(function(d) { return d.x; })
+                         .y(function(d) { return d.y; })
+                         .interpolate("linear");
+svgdiv.append("path").attr("d",lineFunction(lineData)).attr("id","needleid").style("fill","black");
+svgdiv.append("circle").attr("cx",speedometerCenterX).attr("cy",speedometerCenterY).attr("r",15).style("fill","black");//.style("stroke", "black").style("stroke-width","2px");
+
+// sliderBox
+svgdiv.append("rect")
+  .attr("x",60)
+  .attr("y",460)
+  .attr("width",sliderBoxLength)
+  .attr("height",10)
+  .style("fill","gray");
+  
+// slider
+svgdiv.append("rect")
+  .attr("x",60)
+  .attr("y",450)
+  .attr("width",10)
+  .attr("height",30)
+  .attr("id","sliderid")
+  .style("fill","lightgray");
+
+var slider = d3.select("#sliderid"); 
+var speedometer = d3.select("#speedometerid");
+var needle = d3.select("#needleid");
+
+// value updater
+var oldIndextable = d3.select("#oldIndex");
+var newIndextable = d3.select("#newIndex");
+var diffIndextable = d3.select("#diffIndex");
+
+
+var diff = 0;
+var indexKey=0;
+var oldAngle = 0;
+function startTransition()
+{
+	if(currentStep < endStep)
+	{
+		//alert("step=" + currentStep);
+		// current step is the x coordinate of slider
+		currentStep += jumpStep;
+		//d3.select("#cs").text(currentStep); // just for testing
+		
+		//current index
+		currentIndex = index[indexKey++]; //alert("old,currentIndex=" + oldIndex + currentIndex);
+	    diff = (currentIndex-oldIndex);
+		
+		// update in table
+		oldIndextable.text(oldIndex);
+		newIndextable.text(currentIndex);
+		diffIndextable.text(diff);
+		
+		// sliding code		
+			slider.transition()
+			.delay(800)
+			.attr("x",currentStep)
+			.each("start",function() { //alert("diff="+diff);	
+				speedometer.transition()
+    			.duration(500)
+				.style("fill", getColor(1-(diff+rangeOfIndex/2)/rangeOfIndex))
+				.each("start",function(){
+					// rotate needle
+					 angle = Math.round((180/maxIndex)*currentIndex);
+					 needleRotate();
+				});
+
+				//speedometer.style("fill", getColor(1-(diff+rangeOfIndex/2)/rangeOfIndex));
+		   });
+	   //oldAngle = angle;
+	   
+	}// end if
+}// end startTransition
+
+function getColor(value){ //alert(value);
+    //value from 0 to 1
+    var hue=((1-value)*120).toString(10);
+    return ["hsl(",hue,",100%,50%)"].join("");
+}
+function degreeToRadian(angle) { return angle * (Math.PI / 180); }
+
+function needleRotate()
+{
+					
+					 
+						
+					 	radian = degreeToRadian(oldAngle); //alert(oldAngle); //alert((180/maxIndex)*currentIndex);
+						 topX = speedometerCenterX + Math.round((-Math.cos(radian))*needleLength); 
+								//alert("topx,y,changecos, changesin="+topX+", "+topY +", "+Math.round(Math.cos(angle)*needleLength)+", "+Math.round(Math.sin(angle)*needleLength));
+						 topY = speedometerCenterY + Math.round((-Math.sin(radian))*needleLength);
+						 leftX = speedometerCenterX + Math.cos(radian-Math.PI/2)*needleRadius;
+						 leftY = speedometerCenterY + Math.sin(radian-Math.PI/2)*needleRadius;
+						 rightX = speedometerCenterX + Math.cos(radian+Math.PI/2)*needleRadius;
+						 rightY = speedometerCenterY + Math.sin(radian+Math.PI/2)*needleRadius;
+						 
+						 lineDatanew = [ { "x": topX,   "y": topY},
+						 { "x": leftX,  "y": leftY},
+						 { "x": rightX,  "y": rightY}];
+						 
+						 needle.transition().duration(0)
+						 .attr("d",lineFunction(lineDatanew))
+						 .each("end",function(){ //alert("oangle="+oldAngle+", "+angle);
+						 	if(oldAngle<angle){ 
+								oldAngle++; 
+								needleRotate();
+							}
+							else if(oldAngle>angle){
+								oldAngle--;
+								needleRotate();
+							}
+							else
+							{
+								oldIndex = currentIndex;
+								startTransition();
+							}
+								
+						 });
+}
+</script>
+
+</html>
