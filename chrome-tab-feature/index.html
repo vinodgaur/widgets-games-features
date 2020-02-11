@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>event viewer as chrome tab</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="styles/common/common.css">
+	<link rel="stylesheet" type="text/css" href="styles/event-viewer/event-viewer.css">
+</head>
+<body>
+	<div class="container event-viewer">
+		<div class="heading">
+			<h2>Event viewer</h2>
+		</div>
+		<div class="content">
+			<div class="event-list">
+				<ul>
+					<li data-id="et1">Event Type 1</li>
+					<li data-id="et2">Event Type 2</li>
+					<li data-id="et3">Event Type 3</li>
+					<li data-id="et4">Event Type 4</li>
+					<li data-id="et5">Event Type 5</li>
+					<li data-id="et6">Event Type 6</li>
+					<li data-id="et7">Event Type 7</li>
+					<li data-id="et8">Event Type 8</li>
+					<li data-id="et9">Event Type 9</li>
+					<li data-id="et10">Event Type 10</li>
+					<li data-id="et11">Event Type 11</li>
+					<li data-id="et12">Event Type 12</li>
+					<li data-id="et13">Event Type 13</li>
+					<li data-id="et14">Event Type 14</li>
+				</ul>
+			</div>
+			<div class="tab-section">
+				<div class="tabs">
+					<span id="et1" class="tab active"><a href="#">event type 1 tab</a> <button class="close">X</button></span>
+				</div>
+				<div class="tabs-content">
+					<div id="et1-content" class="tab-content active">
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+						<div class="content">
+							<div class="timestamp">
+								<p>timestamp</p>
+								<p>324345346345</p>
+							</div>
+							<div class="desc">
+								<p>content</p>
+								<p>This is about structure of html and css. It looks nice. It is based on html5</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		//priority js
+		window.lh={};
+		lh.loadJs=function(url) {
+			let d=document.createElement('script');
+			d.type='text/javascript';
+			d.src=url;
+			let h=document.getElementsByTagName('head')[0];
+			h.parentNode.insertBefore(d,h);
+		}
+	</script>
+	<script type="text/javascript">
+		//perform operations using priority js
+		setTimeout(()=>{lh.loadJs('scripts/event-viewer-ctrl.js')});
+	</script>
+</body>
+</html>
