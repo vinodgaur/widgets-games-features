@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Bouncing ball:problem 2</title>
+<style type="text/css">
+	#wallArea { background:#fff; border:10px solid green; }
+</style>
+</head>
+<body>
+	<canvas id="wallArea" width="300" height="300"></canvas>
+	<script type="text/javascript">
+	//utils functions
+	function getRandomColor() {
+	  var letters = '0123456789ABCDEF';
+	  var color = '#';
+	  for (var i = 0; i < 6; i++) {
+	    color += letters[Math.floor(Math.random() * 16)];
+	  }
+	  return color;
+	}
+
+	function getRandomNumber(min,max){
+		min=min||0;
+		max=max||1;
+		return min+Math.floor(Math.random()*(max-min));
+	}
+
+	function drawBalls(context,ballObj){
+		context.beginPath();
+		context.fillStyle=ballObj.color;
+		context.arc(ballObj.x,ballObj.y,20,0,Math.PI*(2),true);
+		context.closePath();
+		context.fill();
+		
+		if( ballObj.x<0 || ballObj.x>300)
+			ballObj.dx=-ballObj.dx;
+		if( ballObj.y<0 || ballObj.y>300)
+			ballObj.dy=-ballObj.dy;
+			
+		ballObj.x+=ballObj.dx;
+		ballObj.y+=ballObj.dy;
+	}
+
+	function draw(){
+		context= wallArea.getContext('2d');
+		context.clearRect(0,0,300,300);
+		for(var i=0;i<ballsArr.length;i++){
+			drawBalls(context, ballsArr[i]);
+		}
+	}
+
+	//end utils
+
+	//variables
+	var context;
+	var ballsArr=[{x:10,y:150,dx:2,dy:4,color:getRandomColor()}];
+	var allowedBalls=5;
+
+	//code
+	setInterval(draw,10);
+
+	var wallArea=document.getElementById("wallArea")
+	wallArea.addEventListener('click', function addBall(e){
+		if(ballsArr.length<allowedBalls){
+			ballsArr.push({
+				x:getRandomNumber(0,300),
+				y:getRandomNumber(0,300),
+				dx:getRandomNumber(1,5),
+				dy:getRandomNumber(1,5),
+				color:getRandomColor()
+			});
+		} else {
+			wallArea.removeEventListener('click', addBall);
+		}
+	});
+	</script>
+
+</body>
+</html>
